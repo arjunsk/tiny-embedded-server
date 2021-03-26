@@ -1,4 +1,4 @@
-package com.arjunsk.eg.socket.thread;
+package com.arjunsk.networking.components.socket.thread;
 
 import java.io.IOException;
 import java.net.ServerSocket;

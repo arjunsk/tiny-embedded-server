@@ -1,4 +1,4 @@
-package com.arjunsk.eg.socket.clientserver;
+package com.arjunsk.networking.components.socket.clientserver;
 
 import java.io.DataInputStream;
 import java.io.IOException;

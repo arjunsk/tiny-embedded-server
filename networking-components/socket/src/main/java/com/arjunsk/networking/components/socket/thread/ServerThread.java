@@ -1,4 +1,4 @@
-package com.arjunsk.eg.socket.thread;
+package com.arjunsk.networking.components.socket.thread;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;

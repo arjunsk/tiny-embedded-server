@@ -1,4 +1,4 @@
-package com.arjunsk.eg.socket.fileserver;
+package com.arjunsk.networking.components.socket.fileserver;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;

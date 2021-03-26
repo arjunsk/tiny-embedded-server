@@ -10,7 +10,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>java-net-examples</module>
+    <module>networking-components</module>
   </modules>
 
   <properties>
