@@ -6,10 +6,10 @@
 
   <parent>
     <groupId>com.arjunsk</groupId>
-    <artifactId>networking-components</artifactId>
+    <artifactId>ck-server</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>socket</artifactId>
+  <artifactId>ck-server-core</artifactId>
 
 </project>

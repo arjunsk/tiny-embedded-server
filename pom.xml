@@ -11,6 +11,7 @@
 
   <modules>
     <module>networking-components</module>
+    <module>server-examples</module>
   </modules>
 
   <properties>

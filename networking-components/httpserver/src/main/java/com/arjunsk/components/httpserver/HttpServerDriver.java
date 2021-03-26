@@ -18,7 +18,7 @@ public class HttpServerDriver {
     // Register endpoints
     server.createContext("/", new RootHandler());
     server.createContext("/echoHeader", new EchoHeaderHandler());
-    server.setExecutor(Executors.newSingleThreadExecutor());
+    server.setExecutor(Executors.newCachedThreadPool());
     server.start();
   }
 }
