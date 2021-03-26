@@ -1,7 +1,7 @@
 ## Java Networking
 
 ### Networking Components
-This is my attempt to understand native networking tools provided by `java`.
+Understand more about networking tools provided by `java`.
 
 #### Socket
 1. [Socket Programing](https://www.javatpoint.com/socket-programming)
@@ -13,7 +13,7 @@ This is my attempt to understand native networking tools provided by `java`.
 1. [Http Server Article](https://www.codeproject.com/Tips/1040097/Create-a-Simple-Web-Server-in-Java-HTTP-Server)
 
 ### Server Examples
-Trying to create a server from scratch.
+Trying to create a http server from scratch.
 
 #### CK Server
-1. [Github Proj1](https://github.com/devashish234073/Java-Socket-Http-Server)
+1. [CK Server src](/server-examples/ck-server)
