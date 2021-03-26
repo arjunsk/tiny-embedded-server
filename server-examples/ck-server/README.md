@@ -46,7 +46,7 @@ public class EchoHeaderHandler implements Handler {
 ![Browser Output](misc/screenshots/echo-header-screenshot.PNG)
 
 ### Features
-- Similar to `com.sun.net.*` HTTPServer interface.
+- Similar to `com.sun.net.*` HTTPServer.
     - `Exchange` added
     - `Handler` added
 
