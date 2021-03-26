@@ -2,6 +2,7 @@ package com.arjunsk.server.ck.sample;
 
 import com.arjunsk.server.ck.CkHttpServer;
 import com.arjunsk.server.ck.enums.HttpMethod;
+import com.arjunsk.server.ck.sample.handlers.EchoHeaderHandler;
 import com.arjunsk.server.ck.sample.handlers.RootHandler;
 import java.net.InetSocketAddress;
 
@@ -12,7 +13,7 @@ public class CkServerDriver {
     CkHttpServer server = new CkHttpServer(new InetSocketAddress(port));
 
     server.addHandler("/", HttpMethod.GET,new RootHandler());
-    server.addHandler("/echoHeader", HttpMethod.GET,new RootHandler());
+    server.addHandler("/echoHeader", HttpMethod.GET,new EchoHeaderHandler());
 
     server.start();
   }

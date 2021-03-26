@@ -16,4 +16,4 @@ This is my attempt to understand native networking tools provided by `java`.
 Trying to create a server from scratch.
 
 #### CK Server
-1. [Github Proj1](https://github.com/devashish234073/Java-Socket-Http-Server)
+1. [Github Sample](https://github.com/devashish234073/Java-Socket-Http-Server)
