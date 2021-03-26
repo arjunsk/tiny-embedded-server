@@ -3,7 +3,7 @@ This is a http server, build from scratch using `Socket`.
 
 ### Usage
 
-> CkServerDriver.java (Register handlers)
+> CkServerDriver.java
 ```java
 public class CkServerDriver {
 
@@ -11,29 +11,32 @@ public class CkServerDriver {
     int port = 8080;
     CkHttpServer server = new CkHttpServer(new InetSocketAddress(port));
 
+    // Register Handlers
     server.addHandler("/", HttpMethod.GET,new RootHandler());
     server.addHandler("/echoHeader", HttpMethod.GET,new EchoHeaderHandler());
-
+  
+    // Start server
     server.start();
   }
 }
 ```
 
-> EchoHeaderHandler.java (Sample handler)
+> EchoHeaderHandler.java
 ```java
 public class EchoHeaderHandler implements Handler {
 
+  // Handler that prints get request headers
   @Override
   public void handle(CkHttpExchange he) throws IOException {
 
-    // Read
+    // Read Headers
     List<String> headers = he.getRequestHeaders();
     StringBuilder response = new StringBuilder();
     for (String header : headers) {
       response.append(header).append("\n");
     }
 
-    // Write
+    // Write Response
     he.sendResponseHeaders(HttpStatusCode.OK, ContentType.TEXT);
     OutputStream os = he.getResponseBody();
     os.write(response.toString().getBytes());
