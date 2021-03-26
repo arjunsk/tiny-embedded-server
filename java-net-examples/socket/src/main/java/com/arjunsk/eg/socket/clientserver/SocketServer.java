@@ -1,4 +1,4 @@
-package com.arjunsk.eg.socket;
+package com.arjunsk.eg.socket.clientserver;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 @SuppressWarnings("java:S2189")
-public class Server {
+public class SocketServer {
   public static void main(String[] args) throws IOException {
 
     DataInputStream inputStream = null;
