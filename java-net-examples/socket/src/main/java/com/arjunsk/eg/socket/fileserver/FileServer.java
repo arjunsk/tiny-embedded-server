@@ -2,14 +2,12 @@ package com.arjunsk.eg.socket.fileserver;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
@@ -32,11 +30,16 @@ public class FileServer {
     port = Integer.parseInt(args[0]);
     wwwRoot = args[1];
 
-    try (ServerSocket serverSocket = new ServerSocket(8080)) {
+    try (ServerSocket serverSocket = new ServerSocket(port)) {
       while (true) {
-        try (Socket client = serverSocket.accept()) {
-          handleRequest(client);
-        }
+        // Wait for request
+        Socket connection = serverSocket.accept();
+
+        // Handle request
+        handleRequest(connection);
+
+        // Close the socket
+        connection.close();
       }
     } catch (IOException e) {
       System.err.println("Could not start server: " + e);
@@ -45,11 +48,8 @@ public class FileServer {
   }
 
   private static void handleRequest(Socket connection) throws IOException {
-    // wait for request
     BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
     OutputStream out = new BufferedOutputStream(connection.getOutputStream());
-    PrintStream pout = new PrintStream(out);
 
     StringBuilder requestBuilder = new StringBuilder();
     String line;
@@ -68,40 +68,32 @@ public class FileServer {
 
     List<String> headers = Arrays.asList(requestsLines).subList(2, requestsLines.length);
 
-    String accessLog =
-        String.format("method %s, path %s, version %s, host %s", method, path, version, host);
+    String accessLog = String.format("method %s, path %s, host %s", method, path, host);
     System.out.println(accessLog);
 
-    // parse the line
     if (method.equalsIgnoreCase("GET")) {
-      File f = new File(wwwRoot, path);
-
-      try (InputStream file = new FileInputStream(f)) {
-        // send file
-        okHeader(pout);
-
-        byte[] buffer = new byte[1000];
-        while (file.available() > 0) {
-          out.write(buffer, 0, file.read(buffer));
-        }
-
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      } finally {
-        out.flush();
-      }
+      appendOkHeader(out);
+      appendResponse(out, path);
+      out.flush();
     }
   }
 
-  private static void okHeader(PrintStream pout) {
-    pout.print(
-        "HTTP/1.0 200 OK\r\n"
-            + "Content-Type: "
-            + "text/json"
-            + "\r\n"
-            + "Date: "
-            + new Date()
-            + "\r\n"
-            + "Server: FileServer 1.0\r\n\r\n");
+  private static void appendOkHeader(OutputStream os) throws IOException {
+    os.write(("HTTP/1.1 200 OK" + "\r\n").getBytes());
+    os.write(("ContentType: " + "text/json" + "\r\n").getBytes());
+    os.write(("Date: " + new Date() + "\r\n").getBytes());
+    os.write("\r\n\r\n".getBytes());
+  }
+
+  private static void appendResponse(OutputStream out, String path) throws IOException {
+    File file = new File(wwwRoot, path);
+    try (DataInputStream dataIS = new DataInputStream(new FileInputStream(file))) {
+      int fileLength = (int) file.length();
+      byte[] buffer = new byte[fileLength];
+      dataIS.readFully(buffer);
+      out.write(buffer, 0, fileLength);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }
