@@ -1,5 +1,11 @@
 ## Java Networking
 
+### Server Examples
+Trying to build a tiny http server from scratch.
+
+#### CK Server
+1. [CK Server src](/server-examples/ck-server)
+
 ### Networking Components
 Understand more about networking tools provided by `java`.
 
@@ -11,9 +17,3 @@ Understand more about networking tools provided by `java`.
 
 #### HTTP Server
 1. [Http Server Article](https://www.codeproject.com/Tips/1040097/Create-a-Simple-Web-Server-in-Java-HTTP-Server)
-
-### Server Examples
-Trying to create a http server from scratch.
-
-#### CK Server
-1. [CK Server src](/server-examples/ck-server)
