@@ -33,11 +33,13 @@ public class ServerThread implements Runnable {
 
       StringBuilder requestBuilder = new StringBuilder();
       String line;
-      while (!(line = in.readLine()).trim().isEmpty()) {
+      while (((line = in.readLine()) != null) && !line.trim().isEmpty()) {
         requestBuilder.append(line).append("\r\n");
       }
 
       String request = requestBuilder.toString();
+
+      if (request.isEmpty()) throw new IllegalAccessException();
 
       String[] requestsLines = request.split("\r\n");
       String[] requestLine = requestsLines[0].split(" ");
