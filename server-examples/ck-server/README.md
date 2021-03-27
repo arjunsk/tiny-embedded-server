@@ -57,6 +57,7 @@ public class EchoHeaderHandler implements Handler {
 - ~~Support `POST` body etc~~
 - ~~Read Headers Map~~
 - ~~Read Path Params~~
+- Add integration testcase for `ck-server-sample`
 - Read Query Params
 - Error handler
 - Performance improvement
