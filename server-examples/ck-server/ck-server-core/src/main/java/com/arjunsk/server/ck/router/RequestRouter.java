@@ -71,20 +71,14 @@ public class RequestRouter implements Runnable {
    * <p>Sample request body (From chrome):
    *
    * <pre>
-   * GET /echoHeader HTTP/1.1
-   * Host: localhost:8080
-   * Connection: keep-alive
-   * Cache-Control: max-age=0
-   * sec-ch-ua: "Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"
-   * sec-ch-ua-mobile: ?0
-   * Upgrade-Insecure-Requests: 1
-   * User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36
-   * Sec-Fetch-Site: none
-   * Sec-Fetch-Mode: navigate
-   * Sec-Fetch-User: ?1
-   * Sec-Fetch-Dest: document
-   * Accept-Encoding: gzip, deflate, br
-   * Accept-Language: en-GB,en-US;q=0.9,en;q=0.8
+   *   POST /echo HTTP/1.1 ################ 1. Status Line ###################
+   *   Host: www.example.com ################ 2. Host ###################
+   *   Accept: text/html,/*;q=0.5 ################ 3. Headers[] ###################
+   *   User-Agent: BrowserName/1.0
+   *   Referer: http://www.example.com/
+   *   Content-type: application/x-www-form-urlencoded; charset=utf-8
+   *
+   *   foo=1&bar=2 ################ 4. Body ###################
    * </pre>
    *
    * @param in Request Body
@@ -94,12 +88,13 @@ public class RequestRouter implements Runnable {
   public Optional<CkHttpExchange> createExchange(BufferedReader in, OutputStream out)
       throws IOException {
 
-    StringBuilder requestBuilder = new StringBuilder();
+    // 1. Code to read status line & headers.
+    StringBuilder requestBlock1Builder = new StringBuilder();
     String line;
     while (((line = in.readLine()) != null) && !line.trim().isEmpty()) {
-      requestBuilder.append(line).append("\r\n");
+      requestBlock1Builder.append(line).append("\r\n");
     }
-    String requestBodyString = requestBuilder.toString();
+    String requestBlock1 = requestBlock1Builder.toString();
 
     /*
      * In browser, they might send 2 requests for 1 browser call.
@@ -109,21 +104,28 @@ public class RequestRouter implements Runnable {
      *
      * To avoid null pointer exception we are doing this check.
      */
-    if (requestBodyString.isEmpty()) return Optional.empty();
+    if (requestBlock1.isEmpty()) return Optional.empty();
 
-    String[] requestsLines = requestBodyString.split("\r\n");
+    String[] requestBlock1Lines = requestBlock1.split("\r\n");
 
     // In the first request line, we get method, path and version.
     // Eg: GET /echoHeader HTTP/1.1
-    String[] firstRequestLineArray = requestsLines[0].split(" ");
-    String method = firstRequestLineArray[0];
-    String path = firstRequestLineArray[1];
-    String version = firstRequestLineArray[2];
+    String[] statusLineArray = requestBlock1Lines[0].split(" ");
+    HttpMethod method = HttpMethod.valueOf(statusLineArray[0]);
+    String path = statusLineArray[1];
+    String version = statusLineArray[2];
 
     // In the second line, we get the host name
     // From 3rd line onwards, we only get headers.
-    List<String> headers = Arrays.asList(requestsLines).subList(2, requestsLines.length);
+    List<String> headers = Arrays.asList(requestBlock1Lines).subList(2, requestBlock1Lines.length);
 
-    return Optional.of(new CkHttpExchange(path, HttpMethod.valueOf(method), version, headers, out));
+    // 2. Code to read body.
+    StringBuilder requestBlock2Builder = new StringBuilder();
+    while (in.ready()) {
+      requestBlock2Builder.append((char) in.read());
+    }
+    String requestBody = requestBlock2Builder.toString();
+
+    return Optional.of(new CkHttpExchange(path, method, version, headers, out, requestBody));
   }
 }

@@ -24,17 +24,21 @@ public class CkHttpExchange {
 
   private final OutputStream responseBody;
 
+  private final String requestBody;
+
   public CkHttpExchange(
       String path,
       HttpMethod method,
       String version,
       List<String> requestHeaders,
-      OutputStream responseBody) {
+      OutputStream responseBody,
+      String requestBody) {
     this.path = path;
     this.method = method;
     this.version = version;
     this.requestHeaders = requestHeaders;
     this.responseBody = responseBody;
+    this.requestBody = requestBody;
   }
 
   public String getPath() {
@@ -60,6 +64,11 @@ public class CkHttpExchange {
    */
   public OutputStream getResponseBody() {
     return responseBody;
+  }
+
+  /** Read the request body of POST as string. */
+  public String getRequestBody() {
+    return requestBody;
   }
 
   /**
