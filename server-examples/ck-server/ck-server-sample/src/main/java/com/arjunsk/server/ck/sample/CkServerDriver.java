@@ -20,7 +20,6 @@ public class CkServerDriver {
     server.addHandler("/echoGet", HttpMethod.GET, new EchoGetHandler());
     server.addHandler("/echoPost", HttpMethod.POST, new EchoPostHandler());
 
-
     server.setExecutor(Executors.newCachedThreadPool());
 
     server.start();
