@@ -12,7 +12,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /** Creates the exchange and passes it to the corresponding handler. */
 public class RequestRouter implements Runnable {
@@ -88,7 +90,7 @@ public class RequestRouter implements Runnable {
   public Optional<CkHttpExchange> createExchange(BufferedReader in, OutputStream out)
       throws IOException {
 
-    // 1. Code to read status line & headers.
+    // 1.1 Code to read status line & headers.
     StringBuilder requestBlock1Builder = new StringBuilder();
     String line;
     while (((line = in.readLine()) != null) && !line.trim().isEmpty()) {
@@ -99,8 +101,8 @@ public class RequestRouter implements Runnable {
     /*
      * In browser, they might send 2 requests for 1 browser call.
      *
-     * 1. with empty request body
-     * 2. with correct request body.
+     * a. with empty request body
+     * b. with correct request body.
      *
      * To avoid null pointer exception we are doing this check.
      */
@@ -115,9 +117,16 @@ public class RequestRouter implements Runnable {
     String path = statusLineArray[1];
     String version = statusLineArray[2];
 
-    // In the second line, we get the host name
+    // 1.2 In the second line, we get the host name
     // From 3rd line onwards, we only get headers.
     List<String> headers = Arrays.asList(requestBlock1Lines).subList(2, requestBlock1Lines.length);
+
+    // Convert List of Headers to Map<Header Key, Header Value>
+    Map<String, String> headersMap =
+        headers.stream()
+            .filter(header -> !header.trim().isEmpty())
+            .map(header -> header.split(":", 2))
+            .collect(Collectors.toMap(e -> e[0].trim(), e -> e[1].trim()));
 
     // 2. Code to read body.
     StringBuilder requestBlock2Builder = new StringBuilder();
@@ -126,6 +135,6 @@ public class RequestRouter implements Runnable {
     }
     String requestBody = requestBlock2Builder.toString();
 
-    return Optional.of(new CkHttpExchange(path, method, version, headers, out, requestBody));
+    return Optional.of(new CkHttpExchange(path, method, version, headersMap, out, requestBody));
   }
 }

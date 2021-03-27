@@ -5,7 +5,7 @@ import com.arjunsk.server.ck.enums.HttpMethod;
 import com.arjunsk.server.ck.enums.HttpStatusCode;
 import java.io.OutputStream;
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Passed to handlers inside callee. Will contain all the required information about the incoming
@@ -19,8 +19,7 @@ public class CkHttpExchange {
 
   private final String version;
 
-  // TODO: Later change to map
-  private final List<String> requestHeaders;
+  private final Map<String, String> requestHeaders;
 
   private final OutputStream responseBody;
 
@@ -30,7 +29,7 @@ public class CkHttpExchange {
       String path,
       HttpMethod method,
       String version,
-      List<String> requestHeaders,
+      Map<String, String> requestHeaders,
       OutputStream responseBody,
       String requestBody) {
     this.path = path;
@@ -53,7 +52,7 @@ public class CkHttpExchange {
     return version;
   }
 
-  public List<String> getRequestHeaders() {
+  public Map<String, String> getRequestHeaders() {
     return requestHeaders;
   }
 

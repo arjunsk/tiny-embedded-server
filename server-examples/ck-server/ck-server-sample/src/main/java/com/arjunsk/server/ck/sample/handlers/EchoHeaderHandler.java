@@ -6,7 +6,7 @@ import com.arjunsk.server.ck.enums.HttpStatusCode;
 import com.arjunsk.server.ck.handler.Handler;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
+import java.util.Map;
 
 public class EchoHeaderHandler implements Handler {
 
@@ -14,11 +14,9 @@ public class EchoHeaderHandler implements Handler {
   public void handle(CkHttpExchange he) throws IOException {
 
     // Read
-    List<String> headers = he.getRequestHeaders();
+    Map<String, String> headers = he.getRequestHeaders();
     StringBuilder response = new StringBuilder();
-    for (String header : headers) {
-      response.append(header).append("\n");
-    }
+    headers.forEach((k, v) -> response.append(k).append(" = ").append(v).append("\n"));
 
     // Write
     he.sendResponseHeaders(HttpStatusCode.OK, ContentType.TEXT);

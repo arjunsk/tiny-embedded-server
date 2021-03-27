@@ -55,6 +55,8 @@ public class EchoHeaderHandler implements Handler {
 
 ### TODO
 1. ~~Support `POST` body etc~~
-2. Error handler
-2. Performance improvement
-2. SSL support
+2. ~~Read Headers Map~~
+3. Read Query Params
+4. Error handler
+5. Performance improvement
+6. SSL support
