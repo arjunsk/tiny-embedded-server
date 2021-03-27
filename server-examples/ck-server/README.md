@@ -54,6 +54,7 @@ public class EchoHeaderHandler implements Handler {
     - `Handler` added
 
 ### TODO
-1. Error handler
+1. Support `POST` body etc
+2. Error handler
 2. Performance improvement
 2. SSL support
