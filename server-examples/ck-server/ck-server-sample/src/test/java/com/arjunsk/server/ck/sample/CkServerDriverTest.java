@@ -8,6 +8,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/** Integration test for checking all the endpoints registered in this API Server. */
 public class CkServerDriverTest {
 
   private static Thread serverThread;
