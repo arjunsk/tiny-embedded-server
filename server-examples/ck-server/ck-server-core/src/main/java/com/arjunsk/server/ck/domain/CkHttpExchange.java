@@ -7,6 +7,10 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Passed to handlers inside callee. Will contain all the required information about the incoming
+ * request.
+ */
 public class CkHttpExchange {
 
   private final String path;
@@ -15,7 +19,8 @@ public class CkHttpExchange {
 
   private final String version;
 
-  private final List<String> headers;
+  // TODO: Later change to map
+  private final List<String> requestHeaders;
 
   private final OutputStream responseBody;
 
@@ -23,12 +28,12 @@ public class CkHttpExchange {
       String path,
       HttpMethod method,
       String version,
-      List<String> headers,
+      List<String> requestHeaders,
       OutputStream responseBody) {
     this.path = path;
     this.method = method;
     this.version = version;
-    this.headers = headers;
+    this.requestHeaders = requestHeaders;
     this.responseBody = responseBody;
   }
 
@@ -45,16 +50,27 @@ public class CkHttpExchange {
   }
 
   public List<String> getRequestHeaders() {
-    return headers;
+    return requestHeaders;
   }
 
+  /**
+   * Used for writing the response inside handler implementation.
+   *
+   * @return Response Body.
+   */
   public OutputStream getResponseBody() {
     return responseBody;
   }
 
+  /**
+   * Used for setting/appending the response headers.
+   *
+   * @param responseStatus response status code
+   * @param contentType response content-type
+   */
   public void sendResponseHeaders(HttpStatusCode responseStatus, ContentType contentType) {
     try {
-      responseBody.write(("HTTP/1.1 " + responseStatus.getValue() + " " + responseStatus.getMessage() + "\r\n").getBytes());
+      responseBody.write(("HTTP/1.1 " + responseStatus.toString() + "\r\n").getBytes());
       responseBody.write(("ContentType: " + contentType.getValue() + "\r\n").getBytes());
       responseBody.write(("Date: " + new Date() + "\r\n").getBytes());
       responseBody.write("\r\n\r\n".getBytes());
