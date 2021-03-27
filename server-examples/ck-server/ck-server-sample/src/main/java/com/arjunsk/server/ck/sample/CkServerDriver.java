@@ -2,6 +2,7 @@ package com.arjunsk.server.ck.sample;
 
 import com.arjunsk.server.ck.CkHttpServer;
 import com.arjunsk.server.ck.enums.HttpMethod;
+import com.arjunsk.server.ck.sample.handlers.EchoGetHandler;
 import com.arjunsk.server.ck.sample.handlers.EchoHeaderHandler;
 import com.arjunsk.server.ck.sample.handlers.EchoPostHandler;
 import com.arjunsk.server.ck.sample.handlers.RootHandler;
@@ -16,10 +17,9 @@ public class CkServerDriver {
 
     server.addHandler("/", HttpMethod.GET, new RootHandler());
     server.addHandler("/echoHeader", HttpMethod.GET, new EchoHeaderHandler());
+    server.addHandler("/echoGet", HttpMethod.GET, new EchoGetHandler());
     server.addHandler("/echoPost", HttpMethod.POST, new EchoPostHandler());
 
-    // In Chrome, there is an extra call for favicon.
-    server.addHandler("/favicon.ico", HttpMethod.GET, new RootHandler());
 
     server.setExecutor(Executors.newCachedThreadPool());
 

@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +27,8 @@ public class RequestRouter implements Runnable {
   // Holds all the handlers
   private final HandlerManager handlerManager;
 
-  // NOTE: We are passing the hanlder from CKHttpServer to ensure that there is only one
-  // hanlderManager for 1 server instance.
+  // NOTE: We are passing the handler from CKHttpServer to ensure that there is only one
+  // handlerManager for 1 server instance.
   public RequestRouter(Socket conn, HandlerManager handlerManager) {
     this.conn = conn;
     this.handlerManager = handlerManager;
@@ -44,7 +46,7 @@ public class RequestRouter implements Runnable {
 
       if (exchange.isPresent()) {
 
-        String path = exchange.get().getPath();
+        String path = exchange.get().getRequestUri().getPath();
         HttpMethod method = exchange.get().getMethod();
 
         // Fetch handler using path and method.
@@ -73,14 +75,14 @@ public class RequestRouter implements Runnable {
    * <p>Sample request body (From chrome):
    *
    * <pre>
-   *   POST /echo HTTP/1.1 ################ 1. Status Line ###################
+   *   POST /echo HTTP/1.1 ################ 1. Status Line (Block 1) ###################
    *   Host: www.example.com ################ 2. Host ###################
    *   Accept: text/html,/*;q=0.5 ################ 3. Headers[] ###################
    *   User-Agent: BrowserName/1.0
    *   Referer: http://www.example.com/
    *   Content-type: application/x-www-form-urlencoded; charset=utf-8
    *
-   *   foo=1&bar=2 ################ 4. Body ###################
+   *   foo=1&bar=2 ################ 4. Body (Block 2) ###################
    * </pre>
    *
    * @param in Request Body
@@ -88,7 +90,7 @@ public class RequestRouter implements Runnable {
    * @return Exchange
    */
   public Optional<CkHttpExchange> createExchange(BufferedReader in, OutputStream out)
-      throws IOException {
+      throws IOException, URISyntaxException {
 
     // 1.1 Code to read status line & headers.
     StringBuilder requestBlock1Builder = new StringBuilder();
@@ -101,8 +103,8 @@ public class RequestRouter implements Runnable {
     /*
      * In browser, they might send 2 requests for 1 browser call.
      *
-     * a. with empty request body
-     * b. with correct request body.
+     * a. with empty request headers.
+     * b. with correct request header.
      *
      * To avoid null pointer exception we are doing this check.
      */
@@ -114,7 +116,7 @@ public class RequestRouter implements Runnable {
     // Eg: GET /echoHeader HTTP/1.1
     String[] statusLineArray = requestBlock1Lines[0].split(" ");
     HttpMethod method = HttpMethod.valueOf(statusLineArray[0]);
-    String path = statusLineArray[1];
+    URI pathUri = new URI(statusLineArray[1]);
     String version = statusLineArray[2];
 
     // 1.2 In the second line, we get the host name
@@ -135,6 +137,6 @@ public class RequestRouter implements Runnable {
     }
     String requestBody = requestBlock2Builder.toString();
 
-    return Optional.of(new CkHttpExchange(path, method, version, headersMap, out, requestBody));
+    return Optional.of(new CkHttpExchange(pathUri, method, version, headersMap, out, requestBody));
   }
 }

@@ -4,6 +4,7 @@ import com.arjunsk.server.ck.enums.ContentType;
 import com.arjunsk.server.ck.enums.HttpMethod;
 import com.arjunsk.server.ck.enums.HttpStatusCode;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.Date;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ import java.util.Map;
  */
 public class CkHttpExchange {
 
-  private final String path;
+  private final URI requestUri;
 
   private final HttpMethod method;
 
@@ -26,13 +27,13 @@ public class CkHttpExchange {
   private final String requestBody;
 
   public CkHttpExchange(
-      String path,
+      URI requestUri,
       HttpMethod method,
       String version,
       Map<String, String> requestHeaders,
       OutputStream responseBody,
       String requestBody) {
-    this.path = path;
+    this.requestUri = requestUri;
     this.method = method;
     this.version = version;
     this.requestHeaders = requestHeaders;
@@ -40,8 +41,8 @@ public class CkHttpExchange {
     this.requestBody = requestBody;
   }
 
-  public String getPath() {
-    return path;
+  public URI getRequestUri() {
+    return requestUri;
   }
 
   public HttpMethod getMethod() {
