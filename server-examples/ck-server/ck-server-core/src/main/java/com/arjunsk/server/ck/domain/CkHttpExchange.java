@@ -1,5 +1,7 @@
 package com.arjunsk.server.ck.domain;
 
+import static com.arjunsk.server.ck.constants.ExchangeConstants.CRLF;
+
 import com.arjunsk.server.ck.enums.ContentType;
 import com.arjunsk.server.ck.enums.HttpMethod;
 import com.arjunsk.server.ck.enums.HttpStatusCode;
@@ -79,10 +81,13 @@ public class CkHttpExchange {
    */
   public void sendResponseHeaders(HttpStatusCode responseStatus, ContentType contentType) {
     try {
-      responseBody.write(("HTTP/1.1 " + responseStatus.toString() + "\r\n").getBytes());
-      responseBody.write(("ContentType: " + contentType.getValue() + "\r\n").getBytes());
-      responseBody.write(("Date: " + new Date() + "\r\n").getBytes());
-      responseBody.write("\r\n\r\n".getBytes());
+      responseBody.write(("HTTP/1.1 " + responseStatus.toString() + CRLF).getBytes());
+      responseBody.write(("ContentType: " + contentType.getValue() + CRLF).getBytes());
+      responseBody.write(("Date: " + new Date() + CRLF).getBytes());
+
+      // Request/Response Header block is separated from body using a new lines.
+      responseBody.write(CRLF.getBytes());
+
     } catch (Exception ex) {
       ex.printStackTrace();
     }

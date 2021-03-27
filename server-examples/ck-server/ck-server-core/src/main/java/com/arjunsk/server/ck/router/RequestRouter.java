@@ -1,5 +1,9 @@
 package com.arjunsk.server.ck.router;
 
+import static com.arjunsk.server.ck.constants.ExchangeConstants.COLON;
+import static com.arjunsk.server.ck.constants.ExchangeConstants.CRLF;
+import static com.arjunsk.server.ck.constants.ExchangeConstants.SPACE;
+
 import com.arjunsk.server.ck.domain.CkHttpExchange;
 import com.arjunsk.server.ck.enums.HttpMethod;
 import com.arjunsk.server.ck.handler.Handler;
@@ -96,7 +100,7 @@ public class RequestRouter implements Runnable {
     StringBuilder requestBlock1Builder = new StringBuilder();
     String line;
     while (((line = in.readLine()) != null) && !line.trim().isEmpty()) {
-      requestBlock1Builder.append(line).append("\r\n");
+      requestBlock1Builder.append(line).append(CRLF);
     }
     String requestBlock1 = requestBlock1Builder.toString();
 
@@ -110,11 +114,11 @@ public class RequestRouter implements Runnable {
      */
     if (requestBlock1.isEmpty()) return Optional.empty();
 
-    String[] requestBlock1Lines = requestBlock1.split("\r\n");
+    String[] requestBlock1Lines = requestBlock1.split(CRLF);
 
     // In the first request line, we get method, path and version.
     // Eg: GET /echoHeader HTTP/1.1
-    String[] statusLineArray = requestBlock1Lines[0].split(" ");
+    String[] statusLineArray = requestBlock1Lines[0].split(SPACE);
     HttpMethod method = HttpMethod.valueOf(statusLineArray[0]);
     URI pathUri = new URI(statusLineArray[1]);
     String version = statusLineArray[2];
@@ -127,7 +131,7 @@ public class RequestRouter implements Runnable {
     Map<String, String> headersMap =
         headers.stream()
             .filter(header -> !header.trim().isEmpty())
-            .map(header -> header.split(":", 2))
+            .map(header -> header.split(COLON, 2))
             .collect(Collectors.toMap(e -> e[0].trim(), e -> e[1].trim()));
 
     // 2. Code to read body.
