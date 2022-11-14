@@ -4,6 +4,7 @@
 Trying to build a tiny http server from scratch.
 
 #### CK Server
+This tiny server was build ground up.
 1. [CK Server src](/server-examples/ck-server)
 
 ### Networking Components
